@@ -72,20 +72,6 @@ static void on_display(void){
             5, 5, 5,
             0, 0, 1
         );
-
-    // glBegin(GL_LINES);
-    //     glColor3f(1,0,0);
-    //     glVertex3f(0,0,0);
-    //     glVertex3f(10,0,0);
-        
-    //     glColor3f(0,1,0);
-    //     glVertex3f(0,0,0);
-    //     glVertex3f(0,10,0);
-        
-    //     glColor3f(0,0,1);
-    //     glVertex3f(0,0,0);
-    //     glVertex3f(0,0,10);
-    // glEnd();
  
     /*
      * Kreira se kocka i primenjuje se geometrijska transformacija na
@@ -178,16 +164,6 @@ static void on_keyboard(unsigned char key, int x, int y)
         camera_y = 5 + r * sin((float)pomeraj*pi/180);
         //printf("%f --- %f", camera_x, camera_y);
         // printf("usao\n");
-        glutPostRedisplay();
-        break;
-    case 'w':
-        camera_y += 5;
-        //printf("usao\n");
-        glutPostRedisplay();
-        break;
-    case 's':
-        camera_y -= 5;
-        //printf("usao\n");
         glutPostRedisplay();
         break;
     }
