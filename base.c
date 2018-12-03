@@ -9,7 +9,7 @@ static void on_keyboard(unsigned char key, int x, int y);
 static void on_reshape(int width, int height);
 static void on_display(void);
 
-static float camera_x = 20, camera_y = 5, camera_z = 10, r=15;
+static float camera_x = 20, camera_y = 5, camera_z = 15, r=15;
 
 const static float pi = 3.141592653589793;
 static int pomeraj = 0; //pomeraj
@@ -72,7 +72,30 @@ static void on_display(void){
             5, 5, 5,
             0, 0, 1
         );
- 
+
+    glEnable(GL_DEPTH_TEST);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    float light_position[] = {camera_x, camera_y, camera_z, 0};
+    float light_diffuse[] = {0.7f, 0.7f, 0.7f, 1}; 
+    float light_ambient[] = {0.7f, 0.7f, 0.7f, 1};
+    float light_specular[] = {0.7f, 0.7f, 0.7f, 1};
+
+    float material_diffuse[] = {0.5f, 0.4f,  0.4f, 1};
+    float material_ambient[] = {0.05f, 0, 0, 1};
+    float material_specular[] = {0.7f, 0.04f, 0.04f, 1};
+    float shininess = 50;
+
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, material_specular);
+    glMaterialf(GL_FRONT, GL_SHININESS, shininess);
     /*
      * Kreira se kocka i primenjuje se geometrijska transformacija na
      * istu.
@@ -106,11 +129,23 @@ static void on_display(void){
 
     int x_pocetna = 1, y_pocetno = 1;
 
+    /*Crtanje okvira table*/
+    glPushMatrix();
+    glColor3f(0.8,0.5,0.2);
+     glBegin(GL_QUAD_STRIP);
+                glVertex3f(0, 0, -0.01);
+                glVertex3f(10, 0, -0.01);
+                glVertex3f(0, 10, -0.01);
+                glVertex3f(10, 10, -0.01);
+            glEnd();
+    glPopMatrix();
+
+    /*Crtanje table*/
     glColor3f(0, 0, 1);
     for(int i=x_pocetna; i<=8; i++){
         for(int j=y_pocetno; j<=8; j++){
             if((i+j)%2)
-                glColor3f(1,0,0);
+                glColor3f(1,1,1);
             else
                 glColor3f(0,0,0);
 
@@ -122,6 +157,7 @@ static void on_display(void){
             glEnd();
 
             glPushMatrix();
+
 
             glColor3f(0, 0, 1);
             glTranslatef(i+0.5, j+0.5, 0.5);
