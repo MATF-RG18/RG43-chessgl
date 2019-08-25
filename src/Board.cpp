@@ -1,68 +1,79 @@
 #include "Board.hpp"
-#include <GL/glut.h>
-#include <iostream>
 
-namespace ch{
+Board::Board() {}
 
-    Board::Board(){
-        
-    }
+void Board::init(Field fields[]){
 
-    void Board::init(){
-        int br=0;
-        int color = 1; // crna boja
-        for(int i=0; i<8; i++){
-            color += 1;
+    int br=0;
+
+    /* Postavljanje centra table */
+    center_x = 4.5*FIELD_SIZE;
+    center_y = 4.5*FIELD_SIZE;
+    int color = COLOR_WHITE;
+
+
+    /* Inicijalizacija polozaja polja */
+    for(int i=0; i<8; i++){
+
+        for (int j=0; j<8; j++){
             color %= 2;
-            for(int j=0; j<8; j++){
-                board[br].ordinal = br;
-                board[br].rank = i;
-                board[br].column = j;
-                board[br].center_x = i+1;
-                board[br].center_y = j+1;
-                board[br].center_z = 0;
-                board[br].length = 1;
-                board[br].height = 1;
-                board[br].width = 1;
-                board[br].color = color;
-                color += 1;
-                color %= 2;
-                br++;
-            }
+            fields[br].ordinal = br;
+            fields[br].rank = i;
+            fields[br].column = j;
+            fields[br].center_x = i*FIELD_SIZE + FIELD_SIZE*1;
+            fields[br].center_y = j*FIELD_SIZE + FIELD_SIZE*1;
+            fields[br].center_z = 0;
+            fields[br].length = FIELD_SIZE;
+            fields[br].height = FIELD_SIZE;
+            fields[br].width = FIELD_SIZE;
+            fields[br].color = color;
+            color += 1;
+            br++;
+            
         }
-    }
+        color += 1; /*  da se promeni pocetna boja u novom redu */
+    } 
+}
 
-    void Board::draw(){
+void Board::draw(Field fields[]){
 
-        //Draw coordinates
-        glBegin(GL_LINES);
-            glColor3f(1,0,0);
-            glVertex3f(0,0,0);
-            glVertex3f(10,0,0);
-            
-            glColor3f(0,1,0);
-            glVertex3f(0,0,0);
-            glVertex3f(0,10,0);
-            
-            glColor3f(0,0,1);
-            glVertex3f(0,0,0);
-            glVertex3f(0,0,10);
-        glEnd();
+    /* Crtanje koordinatnih osa zbog lakse izrade projekta */
 
-        //Draw round
-        glPushMatrix();
+    /*
+    glBegin(GL_LINES);
+        glColor3f(1,0,0);
+        glVertex3f(0,0,0);
+        glVertex3f(100,0,0);
+        
+        glColor3f(0,1,0);
+        glVertex3f(0,0,0);
+        glVertex3f(0,100,0);
+        
+        glColor3f(0,0,1);
+        glVertex3f(0,0,0);
+        glVertex3f(0,0,100);
+    glEnd();
+    */
+
+    /* Crtanje podloge */
+    glPushMatrix();
+
+        /* Postavljanje materijala podloge*/
+        border_material.set_ambient(0.1, 0.1, 0.1, 1);
+        border_material.set_diffuse(0.1, 0.9, 0.2, 1);
+        border_material.set_specular(0.1, 0.1, 0.1, 1);
+        border_material.set_shininess(30);
+        border_material.draw();
+        glDisable(GL_LIGHTING);
+        glTranslatef(FIELD_SIZE*4.5,FIELD_SIZE*4.5, -0.36);
         glColor3f (1, 0, 0);
-        glScalef(1,1,0.05);
-        glTranslatef(4.5, 4.5, 0);
-        glutSolidCube(9);
-        glPopMatrix();
+        glScalef(1,1,0.02);
+        glutSolidCube(FIELD_SIZE*9);
 
-        //Draw table
+    glPopMatrix();
 
-        int len = sizeof(board) / sizeof(Field);
-        for(int br = 0; br<len; br++)
-            board[br].draw();
-
+    /* Crtanje polja */
+    for(int br = 0; br<64; br++){
+        fields[br].draw();
     }
-  
 }
